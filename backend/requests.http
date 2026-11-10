@@ -1,0 +1,11 @@
+### Get all articles
+GET http://localhost:3000/articles
+
+### Create a new article
+POST http://localhost:3000/articles
+Content-Type: application/json
+
+{
+  "title": "New Article",
+  "url": "http://example.com/article1"
+}
