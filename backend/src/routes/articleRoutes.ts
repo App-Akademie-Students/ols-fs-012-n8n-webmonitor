@@ -34,6 +34,13 @@ export async function articleRoutes(fastify: FastifyInstance) {
       return reply.code(201).send(createdArticle);
     }
   );
+  fastify.get<{ Querystring: { url: string } }>(
+    "/articles/exists", 
+    async (request, reply) => {
+    const url = request.query.url as string;
+    const exists = articleRepository.exists(url);
+    return { exists };
+  }); 
 
 
 }
