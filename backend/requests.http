@@ -7,7 +7,8 @@ Content-Type: application/json
 
 {
   "title": "New Article",
-  "url": "http://example.com/article1"
+  "url": "http://example.com/article1",
+  "relevance": 1
 }
 
 ### Check if an article exists

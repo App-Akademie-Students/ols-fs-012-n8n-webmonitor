@@ -12,13 +12,13 @@ export class ArticleRepository {
       {
         id: 1,
         title: "Sample Article",
-        url: "https://example.com",
+        url: "https://example.com/article1",
         relevance: 1
       },
       {
         id: 2,
         title: "Another Sample Article",
-        url: "https://example.org",
+        url: "https://example.org/article2",
         relevance: 2
       }
 
