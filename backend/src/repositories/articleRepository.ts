@@ -1,3 +1,4 @@
+import { CreateArticleDTO, UpdateArticleDTO } from "../dto/articleDTO.js";
 import { Article } from "../models/article.js";
 
 
@@ -8,19 +9,18 @@ export class ArticleRepository {
 
   constructor() {
     this.articles = [
-        {
-          id: 1,
-          title: "Sample Article",
-          url: "https://example.com",
-          relevance: 1
-        },
-        {
-          id: 2,
-          title: "Another Sample Article",
-          url: "https://example.org",
-          relevance: 2
-        }
-
+      {
+        id: 1,
+        title: "Sample Article",
+        url: "https://example.com",
+        relevance: 1
+      },
+      {
+        id: 2,
+        title: "Another Sample Article",
+        url: "https://example.org",
+        relevance: 2
+      }
 
     ];
   }
@@ -29,16 +29,29 @@ export class ArticleRepository {
     return this.articles;
   }
 
-  getById(id: number): Article | undefined {
-    return this.articles.find(article => article.id === id);
-  }
 
-  create(article:Article): Article {
+  create(data: CreateArticleDTO): Article {
+    const article: Article = {
+      ...data,
+      id: Date.now(),
+   
+    };
 
     this.articles.push(article);
     return article;
   }
-  update(id: number, updatedArticle: Partial<Omit<Article, "id">>): Article | undefined {
+
+
+  exists(url: string): boolean {
+    return this.articles.some(article => article.url === url);
+  }
+
+  getById(id: number): Article | undefined {
+    return this.articles.find(article => article.id === id);
+  }
+
+
+  update(id: number, updatedArticle: UpdateArticleDTO): Article | undefined {
     const article = this.getById(id);
     if (!article) return undefined;
     Object.assign(article, updatedArticle);

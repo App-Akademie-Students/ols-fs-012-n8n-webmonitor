@@ -9,3 +9,7 @@ Content-Type: application/json
   "title": "New Article",
   "url": "http://example.com/article1"
 }
+
+### Check if an article exists
+GET http://localhost:3000/articles/exists?url=http://example.com/article1
+Content-Type: application/json

@@ -91,3 +91,9 @@ Die HTTP-Anfragen können alternativ mit einem beliebigen REST-Client oder
 
 - `backend/` – TypeScript-Backend und seine Abhängigkeiten
 - `workflows/` – vorgesehener Ablageort für n8n-Workflow-Dateien
+
+
+## N8N
+
+* http://host.docker.internal:3000/articles/exists
+* 
