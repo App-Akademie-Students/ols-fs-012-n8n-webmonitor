@@ -7,6 +7,8 @@ import type { FastifyInstance } from "fastify";
 const articleRepository = new ArticleRepository();
 
 export async function articleRoutes(fastify: FastifyInstance) {
+
+  //HTTP GET all articles
   fastify.get("/articles", async (request, reply) => {
     return articleRepository.getAll();
   });
@@ -35,12 +37,17 @@ export async function articleRoutes(fastify: FastifyInstance) {
     }
   );
   fastify.get<{ Querystring: { url: string } }>(
-    "/articles/exists", 
+    "/articles/exists",
     async (request, reply) => {
-    const url = request.query.url as string;
-    const exists = articleRepository.exists(url);
-    return { exists };
-  }); 
-
+      const url = request.query.url;
+      if (!url) {
+        return reply.code(400).send({
+          error: "URL is required"
+        });
+      }
+      const exists = articleRepository.exists(url);
+      return { exists };
+    }
+  );
 
 }

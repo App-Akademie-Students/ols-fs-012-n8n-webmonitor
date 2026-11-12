@@ -3,4 +3,6 @@ export interface Article {
   title: string;
   url: string;
   relevance: number;
+  summary: string;
+  category: string;
 }

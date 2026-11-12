@@ -7,7 +7,7 @@ Content-Type: application/json
 
 {
   "title": "New Article",
-  "url": "http://example.com/article1",
+  "url": "http://example.com/article2",
   "relevance": 1
 }
 

@@ -7,7 +7,7 @@ Backend auf Duplikate prüft.
 ## Voraussetzungen
 
 - Node.js 20 oder neuer und npm (Fastify 5 benötigt Node.js 20+)
-- Visual Studio Code (optional, für die REST-Client-Erweiterung)
+- Visual Studio Code (optional, für REST Client und SQLite Viewer)
 - Eine n8n-Instanz, wenn der Workflow ausgeführt werden soll
 
 ## Verwendete Erweiterungen, Nodes und Pakete
@@ -17,8 +17,9 @@ Backend auf Duplikate prüft.
 - **REST Client** (`humao.rest-client`) von Huachao Mao – optionale VS-Code-
   Erweiterung zum Senden der Beispielanfragen aus `backend/requests.http`.
   Sie ist nicht für den Betrieb des Backends erforderlich.
-- Im Repository ist keine weitere VS-Code-Erweiterung oder `devcontainer`-
-  Konfiguration hinterlegt.
+- **SQLite Viewer** von Florian Klampfer ist in VS Code installiert.
+  Die Erweiterung dient zum Anzeigen von SQLite-Datenbankdateien.
+- Im Repository ist keine `devcontainer`-Konfiguration hinterlegt.
 
 Installation in VS Code: in der Erweiterungsansicht nach **REST Client** suchen
 und die Erweiterung von Huachao Mao installieren. Alternativ im Terminal:
@@ -26,6 +27,46 @@ und die Erweiterung von Huachao Mao installieren. Alternativ im Terminal:
 ```powershell
 code --install-extension humao.rest-client
 ```
+
+Für SQLite Viewer in der Erweiterungsansicht nach **SQLite Viewer** suchen
+und die Erweiterung von **Florian Klampfer** auswählen.
+
+### SQLite
+
+Wir verwenden **SQLite** als Datenbank im Projekt. Datenbankdateien können
+mit der installierten VS-Code-Erweiterung **SQLite Viewer** geöffnet werden.
+
+Der eingecheckte Backend-Code ist derzeit noch nicht an SQLite angebunden:
+`ArticleRepository` hält die Artikel in einem Array im Arbeitsspeicher.
+Im Repository sind noch kein SQLite-Treiber, kein Datenbankschema und keine
+Datenbankdatei hinterlegt. Ein Dateipfad sowie Schritte zur Initialisierung
+der SQLite-Datenbank sind daher noch nicht dokumentierbar.
+
+#### SQLite-Kommandozeilentools unter Windows installieren
+
+1. Die [offizielle SQLite-Downloadseite](https://www.sqlite.org/download.html)
+   öffnen und unter **Precompiled Binaries for Windows** das zur
+   Rechnerarchitektur passende **sqlite-tools**-ZIP herunterladen
+   (für Windows auf x64: `sqlite-tools-win-x64-*.zip`).
+2. Das ZIP beispielsweise nach `C:\Tools\sqlite` entpacken. Die Datei
+   `sqlite3.exe` muss direkt in diesem Ordner liegen.
+3. Diesen Ordner zur Benutzer-Umgebungsvariable `Path` hinzufügen:
+   in Windows nach **Umgebungsvariablen für dieses Konto bearbeiten** suchen,
+   unter **Benutzervariablen** den Eintrag **Path** bearbeiten und über **Neu**
+   `C:\Tools\sqlite` ergänzen.
+4. VS Code beziehungsweise PowerShell neu starten und die Installation prüfen:
+
+   ```powershell
+   sqlite3 --version
+   ```
+
+Wenn eine Versionsnummer ausgegeben wird, sind die Kommandozeilentools verfügbar.
+Ohne `Path`-Eintrag lässt sich die Prüfung auch mit
+`C:\Tools\sqlite\sqlite3.exe --version` ausführen.
+
+SQLite benötigt keinen separat laufenden Datenbankserver. Die Kommandozeilentools
+werden unabhängig von der VS-Code-Erweiterung SQLite Viewer installiert;
+die Anbindung des Backends muss zusätzlich im Code umgesetzt werden.
 
 ### n8n-Workflow
 
@@ -122,7 +163,8 @@ n8n-Prozess erreichbare Backend-Adresse einzutragen.
 
 Die Artikel werden aktuell in einem In-Memory-Repository gehalten. Beim Start
 werden zwei Beispieldatensätze angelegt; Änderungen gehen beim Neustart
-verloren. Eine Datenbank ist nicht eingerichtet.
+verloren. Die im Projekt verwendete SQLite-Datenbank ist in diesem Backend-Stand
+noch nicht angebunden (siehe Abschnitt „SQLite“).
 
 ## Projektstruktur
 
