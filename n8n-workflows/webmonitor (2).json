@@ -2,17 +2,6 @@
   "name": "webmonitor",
   "nodes": [
     {
-      "parameters": {},
-      "type": "n8n-nodes-base.manualTrigger",
-      "typeVersion": 1,
-      "position": [
-        -544,
-        -32
-      ],
-      "id": "1c02abdd-0c0e-4216-99b8-0a8b7ce4fdf7",
-      "name": "When clicking ‘Execute workflow’"
-    },
-    {
       "parameters": {
         "url": "http://host.docker.internal:3000/health",
         "options": {
@@ -105,7 +94,7 @@
     },
     {
       "parameters": {
-        "maxItems": 4
+        "maxItems": 6
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
@@ -119,7 +108,7 @@
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Analysiere folgenden Artikel aus einem RSS-Feed\nzum Thema Softwareentwicklung und künstliche\nIntelligenz.\n\nTitel:\n{{ $('RSS Read').item.json.title }}\n\nBeschreibung:\n{{ $('RSS Read').item.json.contentSnippet || 'Keine Beschreibung vorhanden' }}\n\nErstelle:\n1. Eine kurze Zusammenfassung auf Deutsch.\n2. Eine thematische Kategorie.\n3. Eine Relevanzbewertung von 1 bis 10.\n\nBewerte die Relevanz für Softwareentwickler,\ndie sich mit KI-Technologien beschäftigen.\n\nVerwende ausschließlich die bereitgestellten\nInformationen. Erfinde keine zusätzlichen Fakten.",
+        "text": "=Analysiere den folgenden Artikel.\n\nTitel:\n{{ $('RSS Read').item.json.title }}\n\nArtikelinhalt:\n{{ $json.text }}\n\nErstelle eine kurze Zusammenfassung auf Deutsch.\n\nBewerte die Relevanz für KI-Entwickler und die\nKI-Branche auf einer Skala von 1 bis 10.\n\nBerücksichtige dabei:\n- Technische Innovationen und neue KI-Modelle\n- Neue Entwicklungswerkzeuge und Frameworks\n- KI-Infrastruktur, GPUs und Hardware\n- Bedeutende Unternehmensentscheidungen\n- Strategische Veränderungen großer KI-Unternehmen\n- Mögliche Auswirkungen auf die KI-Entwicklung\n\nBewertungsskala:\n1–3: Geringe Relevanz\n4–6: Mittlere Relevanz\n7–8: Hohe Relevanz\n9–10: Außergewöhnlich bedeutende Entwicklung\n\nWichtig:\nEine Nachricht kann auch ohne unmittelbaren\ntechnischen Inhalt hochrelevant sein, wenn\nsie erhebliche strategische Bedeutung für\ndie KI-Branche hat.\n\nUnterscheide zwischen bestätigten Ereignissen\nund möglichen zukünftigen Auswirkungen.\n\nGib zusätzlich eine kurze Begründung für\ndie Relevanzbewertung.",
         "hasOutputParser": true,
         "batching": {}
       },
@@ -224,6 +213,10 @@
             {
               "name": "category",
               "value": "={{ $json.output.category }}"
+            },
+            {
+              "name": "published_at",
+              "value": "={{ $('RSS Read').item.json.isoDate }}"
             }
           ]
         },
@@ -233,25 +226,34 @@
       "typeVersion": 4.5,
       "position": [
         544,
-        272
+        192
       ],
       "id": "306b101f-dbdd-4022-a743-603ca87a21d4",
       "name": "Save Article"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -592,
+        -16
+      ],
+      "id": "8e8f21d7-dcbc-4b22-bd57-852fa39a00d9",
+      "name": "Schedule Trigger"
     }
   ],
   "pinData": {},
   "connections": {
-    "When clicking ‘Execute workflow’": {
-      "main": [
-        [
-          {
-            "node": "HTTP Request",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "HTTP Request": {
       "main": [
         [
@@ -350,6 +352,17 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -357,7 +370,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "f57f3d90-c3da-4036-89be-e3ed1e5ea03d",
+  "versionId": "0bfe437c-1813-49e9-b5f2-1a28a8dfd193",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "1638f28d3a8c1081c51ceb2fa910bef051d934c97477b6e5f52712f07748dfbf"
