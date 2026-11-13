@@ -1,5 +1,18 @@
+# npm-Abhängigkeiten und lokale Logs
 node_modules/
-backend/dist/
+npm-debug.log*
+
+# TypeScript-Build
+/backend/dist/
+*.tsbuildinfo
+
+# Lokale Konfiguration (Beispieldateien bleiben versionierbar)
 .env
 .env.*
 !.env.example
+
+# SQLite-Datenbanken und zugehörige WAL-/SHM-/Journal-Dateien
+/backend/articles.db
+/backend/articles.db-*
+data/*.sqlite
+data/*.sqlite-*

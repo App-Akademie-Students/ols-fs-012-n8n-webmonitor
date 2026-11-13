@@ -166,11 +166,58 @@ werden zwei Beispieldatensätze angelegt; Änderungen gehen beim Neustart
 verloren. Die im Projekt verwendete SQLite-Datenbank ist in diesem Backend-Stand
 noch nicht angebunden (siehe Abschnitt „SQLite“).
 
+## Frontend
+
+Ein einfaches, responsives **Frontend mit Vite + TypeScript** ohne zusätzliche Frameworks:
+
+### Features
+
+- **Artikelübersicht**: Tabelle mit Titel, Kategorie, Relevanz und Veröffentlichungsdatum
+- **Sortierung**: Nach Veröffentlichungsdatum absteigend (neueste zuerst)
+- **Suche & Filter**: Nach Titel suchen, nach Mindest-Relevanz filtern
+- **Artikeldetails**: Vollständige Informationen mit Zusammenfassung und Link zum Originalartikel
+- **Datumformatierung**: Deutsche Formatierung (`DD.MM.YYYY, HH:mm`) in der Zeitzone `Europe/Berlin`
+- **Fehlerbehandlung**: Aussagekräftige Fehlermeldungen
+
+### Frontend starten
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Das Frontend läuft dann unter **http://localhost:5173** und nutzt einen Vite-Proxy,
+um API-Anfragen zu `/api/articles` an das Backend unter `http://localhost:3000` 
+weiterzuleiten.
+
+### Frontend bauen (Produktion)
+
+```powershell
+cd frontend
+npm run build
+```
+
+Das Ergebnis liegt in `frontend/dist/` und kann auf einem statischen Web-Server gehostet werden.
+
+### Architektur
+
+- **Vite 6**: Schneller Dev-Server und optimierter Build
+- **TypeScript 7**: Strikte Typsicherheit
+- **Native Fetch API**: Keine zusätzliche HTTP-Bibliothek
+- **Intl.DateTimeFormat**: Sprachengerechte Datumformatierung
+- **Public/Src-Struktur**: Saubere Trennung von Assets und Quellcode
+
+Ausführliche Dokumentation: siehe [frontend/README.md](./frontend/README.md)
+
 ## Projektstruktur
 
 - `backend/` – TypeScript-Backend, npm-Abhängigkeiten und HTTP-Beispiele
 - `backend/src/server.ts` – Fastify-Server und Health-Check
 - `backend/src/routes/articleRoutes.ts` – Artikel-Endpunkte
 - `backend/src/models/article.ts` und `backend/src/dto/articleDTO.ts` – Datenmodell und DTOs
-- `backend/src/repositories/articleRepository.ts` – In-Memory-Datenhaltung
+- `backend/src/repositories/articleRepository.ts` – SQLite-Datenhaltung
+- `frontend/` – Vite + TypeScript Frontend
+- `frontend/src/` – Haupt-Anwendungslogik und Styling
+- `frontend/public/` – Statische Assets
 - `n8n-workflows/` – exportierte n8n-Workflows

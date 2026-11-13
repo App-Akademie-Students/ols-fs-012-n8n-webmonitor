@@ -5,4 +5,5 @@ export interface Article {
   relevance: number;
   summary: string;
   category: string;
+  published_at: string;
 }

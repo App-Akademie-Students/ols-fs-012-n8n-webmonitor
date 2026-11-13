@@ -43,16 +43,16 @@ export class ArticleRepository {
   //   const article: Article = {
   //     ...data,
   //     id: Date.now(),
-   
+
   //   };
 
   //   this.articles.push(article);
   //   return article;
   // }
 
-  create(data: CreateArticleDTO): Article { 
-    const stmt = db.prepare("INSERT INTO articles (url, relevance, summary, category) VALUES (@title, @relevance, @summary, @category)");
-    const info = stmt.run(data  );
+  create(data: CreateArticleDTO): Article {
+    const stmt = db.prepare("INSERT INTO articles (title, url, relevance, summary, category,published_at) VALUES (@title, @url, @relevance, @summary, @category, @published_at)");
+    const info = stmt.run(data);
     return {
       id: info.lastInsertRowid as number,
       ...data
@@ -61,10 +61,10 @@ export class ArticleRepository {
   // exists(url: string): boolean {
   //   return this.articles.some(article => article.url === url);
   // }
-exists(url: string): boolean {
-  return db.prepare("SELECT 1  FROM articles WHERE url = ?").get(url) != undefined;
-  
-}
+  exists(url: string): boolean {
+    return db.prepare("SELECT 1  FROM articles WHERE url = ?").get(url) != undefined;
+
+  }
 
 
 

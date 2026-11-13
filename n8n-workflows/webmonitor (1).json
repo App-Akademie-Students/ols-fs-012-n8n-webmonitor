@@ -1,0 +1,368 @@
+{
+  "name": "webmonitor",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -544,
+        -32
+      ],
+      "id": "1c02abdd-0c0e-4216-99b8-0a8b7ce4fdf7",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:3000/health",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        -320,
+        -32
+      ],
+      "id": "6deb38fa-52fa-44a7-9d1a-06653340f62f",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://news.ycombinator.com/rss",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "16cd69f9-6275-4816-a15d-b3b951932b80",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "url": "http://host.docker.internal:3000/articles/exists",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "url",
+              "value": "={{ $json.link }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        128,
+        -32
+      ],
+      "id": "821e3290-9f5c-4917-ab03-4cc6f1f2edf5",
+      "name": "Check Article Exists"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "261aff11-ec90-49dc-a425-149f4407c3dd",
+              "leftValue": "={{ $json.exists }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "false",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        352,
+        -32
+      ],
+      "id": "58a8bbab-65b5-4a65-bf2f-8fac3d5e0248",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "maxItems": 4
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        256
+      ],
+      "id": "73766732-7b84-4b72-acd9-4c385459e39b",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Analysiere folgenden Artikel aus einem RSS-Feed\nzum Thema Softwareentwicklung und künstliche\nIntelligenz.\n\nTitel:\n{{ $('RSS Read').item.json.title }}\n\nBeschreibung:\n{{ $('RSS Read').item.json.contentSnippet || 'Keine Beschreibung vorhanden' }}\n\nErstelle:\n1. Eine kurze Zusammenfassung auf Deutsch.\n2. Eine thematische Kategorie.\n3. Eine Relevanzbewertung von 1 bis 10.\n\nBewerte die Relevanz für Softwareentwickler,\ndie sich mit KI-Technologien beschäftigen.\n\nVerwende ausschließlich die bereitgestellten\nInformationen. Erfinde keine zusätzlichen Fakten.",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -144,
+        208
+      ],
+      "id": "630dcaf2-c13c-4bb9-9ea8-e092e15aa0f3",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": "qwen3-instruct:4b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        368
+      ],
+      "id": "a6f03411-1220-4ab5-864f-b9b960764326",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "6JeJW69BoagJYtop",
+          "name": "Ollama account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"summary\": \"Kurze Zusammenfassung des Artikels\",\n  \"category\": \"AI Agents\",\n  \"relevance\": 8\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        416
+      ],
+      "id": "73e8fd78-59b3-4bdd-b431-8d895d4c503f",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "9af011db-3548-470f-ab3e-8523b936aa09",
+              "leftValue": "={{ $json.output.relevance }}",
+              "rightValue": 3,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        224,
+        208
+      ],
+      "id": "4a58146f-7e07-4d4f-8307-721cd469b011",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:3000/articles",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "title",
+              "value": "={{ $('RSS Read').item.json.title }}"
+            },
+            {
+              "name": "url",
+              "value": "={{ $('RSS Read').item.json.link }}"
+            },
+            {
+              "name": "relevance",
+              "value": "={{ $json.output.relevance }}"
+            },
+            {
+              "name": "summary",
+              "value": "={{ $json.output.summary }}"
+            },
+            {
+              "name": "category",
+              "value": "={{ $json.output.category }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        544,
+        272
+      ],
+      "id": "306b101f-dbdd-4022-a743-603ca87a21d4",
+      "name": "Save Article"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Check Article Exists",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Article Exists": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Save Article",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f57f3d90-c3da-4036-89be-e3ed1e5ea03d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1638f28d3a8c1081c51ceb2fa910bef051d934c97477b6e5f52712f07748dfbf"
+  },
+  "nodeGroups": [],
+  "id": "XvhreHAVQg3TMJCe",
+  "tags": []
+}
