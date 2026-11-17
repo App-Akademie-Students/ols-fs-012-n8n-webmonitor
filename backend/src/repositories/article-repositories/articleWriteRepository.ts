@@ -1,14 +1,14 @@
-import { Article } from "../../models/article.js";
+import { Article } from "../../persinstace/models/article.js";
 import {
   createArticle,
   getArticleById,
-} from "../../storages/article-storage.js";
+} from "../../persinstace/storages/article-storage.js";
 import { articleReadRepository } from "./articleReadRepository.js";
 import {
   CreateArticleDTO,
   UpdateArticleDTO,
-} from "../../../application/dtos/articleDto.js";
-import db from "../../db/test-db.js";
+} from "../../application/dtos/articleDto.js";
+import db from "../../persinstace/db/test-db.js";
 
 export class articleWriteRepository {
   private articles: Article[] = [];

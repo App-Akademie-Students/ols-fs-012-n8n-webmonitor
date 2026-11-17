@@ -1,9 +1,9 @@
-import { Article } from "../../models/article.js";
+import { Article } from "../../persinstace/models/article.js";
 import {
   existsAttikel,
   getAllArticles,
   getArticleById,
-} from "../../storages/article-storage.js";
+} from "../../persinstace/storages/article-storage.js";
 
 export class articleReadRepository {
   //private articles: Article[] = [];
