@@ -1,29 +1,25 @@
-
 import Fastify from "fastify";
-import { articleRoutes } from "./routes/articleRoutes.js";
-
+import { articleEndpoints } from "./presenter/endpoints/article-endpoints.js";
 const port = Number(process.env.PORT ?? 3000);
 
-const server = Fastify({ logger: true });
+const server = Fastify();
 
-// Health-Check
-server.get("/health", async () => {
+server.get("/health", async (request, reply) => {
   return { status: "ok" };
 });
 
-// Artikel-Routen registrieren
-server.register(articleRoutes);
+// Register additional routes here
+server.register(articleEndpoints);
 
-// Server starten
+// Start the server
 try {
-  const address = await server.listen({
-    port,
+  const address = await server.listen({ 
+    port, 
     host: "0.0.0.0" //Damit lauscht Fastify auf allen verfügbaren IPv4-Netzwerkschnittstellen des Rechners.
     //wichtig für Docker!
-  });
-
-  server.log.info(`Backend läuft auf ${address}`);
-} catch (error) {
-  server.log.error(error);
+   });
+  console.log(`Der Backend läuft auf ${address}`);
+}catch (err) {
+  console.error("Error starting server:", err);
   process.exit(1);
 }
