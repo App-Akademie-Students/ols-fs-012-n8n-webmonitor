@@ -84,11 +84,25 @@
 │
 ├── backend/
 │   ├── src/
-│   │   ├── server.ts              ← Fastify-Server
-│   │   ├── routes/articleRoutes.ts ← API-Endpunkte
-│   │   ├── models/article.ts      ← Data Model
-│   │   ├── repositories/          ← Data Access
-│   │   └── database/              ← SQLite Anbindung
+│   ├─src/
+│   │  ├─application/
+│   │  │  └─dtos
+│   │  │     └─articleDto.ts
+│   │  ├─persinstance/
+│   │  │  ├─db/
+│   │  │  │  └─test-db.ts
+│   │  │  ├─models/
+│   │  │  │  └─article.ts
+│   │  │  └─storages/
+│   │  │     └─article-storage.ts
+│   │  ├─presenter
+│   │  │  └─endpoints
+│   │  │     └─article-endpoints.ts
+│   │  ├─repositories
+│   │  │  └─article-repositories
+│   │  │     ├─articleReadRepository.ts
+│   │  │     └─articleWriteRepository.ts
+│   │  └─server.ts
 │   ├── package.json               ← Backend Dependencies
 │   └── tsconfig.json
 │

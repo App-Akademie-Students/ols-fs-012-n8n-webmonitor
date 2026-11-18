@@ -4,13 +4,10 @@ GET http://localhost:3000/articles
 ### Create a new article
 POST http://localhost:3000/articles
 Content-Type: application/json
-
 {
   "title": "New Article",
-  "url": "http://example.com/article2",
-  "relevance": 1
+  "url": "http://example.com/article1"
 }
-
 ### Check if an article exists
 GET http://localhost:3000/articles/exists?url=http://example.com/article1
 Content-Type: application/json
