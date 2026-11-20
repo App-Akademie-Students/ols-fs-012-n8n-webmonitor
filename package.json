@@ -1,8 +1,5 @@
 {
   "devDependencies": {
     "tsx": "^4.23.15"
-  },
-  "dependencies": {
-    "fastify": "^5.12.8"
   }
 }
